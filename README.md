@@ -1,22 +1,22 @@
 # MedBridge Live
-Hackathon research prototype. No real patient data. Not clinically validated.
+Hackathon research prototype. No real patient data. Not clinically validated, not a certified interpreter.
 
 ## Run
-Python 3.11 recommended. From this directory:
 ```
-python -m venv .venv
-source .venv/bin/activate
-pip install fastapi 'uvicorn[standard]'
+python -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt
 uvicorn server:app --host 0.0.0.0 --port 8000
 ```
-Open http://localhost:8000. Offline mode supports only the bundled example phrases, not arbitrary translation. Select a demo scenario, translate, inspect flags, then release only after simulated review. Red flags block release; turn off injection and retry. For two tabs use the same room name and different roles. Rooms are unauthenticated, in-memory, and not appropriate for private information.
+Open http://localhost:8000 in Chrome (speech recognition needs Chrome on localhost or HTTPS).
 
-## Enable arbitrary translation
-```
-pip install -r requirements.txt
-MEDBRIDGE_MODEL=1 uvicorn server:app --host 0.0.0.0 --port 8000
-```
-First arbitrary request downloads NLLB-200 distilled 600M; allow several GB and time. GPU recommended. NLLB is noncommercial research software and not intended for medical-domain deployment. Bundled examples are illustrative, not professionally reviewed. Browser speech recognition may send audio to its provider; use Chrome on localhost or HTTPS, and fictional data only. Browser speech synthesis depends on installed voices.
+## How it works
+- Click **Start talking**. Speech is transcribed continuously; the partial sentence is translated (~350 ms debounce) and streamed to the other person while you speak, then finalized and spoken aloud on the listener's side.
+- Translation runs locally with Meta NLLB-200 (default `nllb-200-distilled-600M`; set `MEDBRIDGE_NLLB=facebook/nllb-200-distilled-1.3B` or `facebook/nllb-200-3.3B` for more natural output). The model is loaded at startup; the first run downloads it. No API key needed. Optional: `MEDBRIDGE_BACKEND=claude` with `ANTHROPIC_API_KEY` uses Claude instead.
+- Rule-based dose/frequency/negation, culture and emotion checks run on each finished sentence and appear as warnings; they never delay delivery and can miss errors.
+- Two devices: enter the same room name on both, one as Doctor, one as Patient. With no room, one screen shows both roles.
 
-## Scope
-Final-phrase translation, not simultaneous streaming; editable interim speech transcript. Rule-based dose/frequency/negation checks are limited and can miss dangerous errors. Teach-back checks dose/frequency only and asks for explicit warning confirmation. Culture and emotion dictionaries are small and unvalidated. No EHR, authentication, clinical validation or professional interpreter integration. Shared room is a demo transport, not a security boundary. Release button represents simulated qualified review. No latency guarantee. Error injection is explicitly labeled.
+## Limits
+Rooms are unauthenticed and in-memory; browser speech recognition may send audio to its provider (and text goes to Anthropic only if you choose the Claude backend), so use fictional data only. Interim translations of partial sentences may be revised once the sentence finishes. Browser speech synthesis depends on installed voices.
+
+## Speech output
+Translations are spoken through the macOS `say` voices (Lekha, Paulina, Tingting, Samantha) via `/api/tts`; on non-macOS servers the browser's own speech synthesis is used.

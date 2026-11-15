@@ -1,5 +1,6 @@
 fastapi
-uvicorn[standard]
+anthropic
 transformers>=4.40,<5
 sentencepiece
 torch
+uvicorn[standard]
