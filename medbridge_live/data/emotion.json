@@ -1,0 +1,230 @@
+{
+ "categories": {
+  "fear": {
+   "en": [
+    "scared",
+    "afraid",
+    "terrified",
+    "frightened",
+    "fear",
+    "panicking",
+    "panic",
+    "i'm very scared",
+    "scary"
+   ],
+   "es": [
+    "tengo miedo",
+    "estoy asustado",
+    "estoy asustada",
+    "me da miedo",
+    "miedo",
+    "terror"
+   ],
+   "hi": [
+    "डर लग रहा है",
+    "डरा हुआ",
+    "घबराहट",
+    "dar lag raha hai",
+    "ghabrahat",
+    "mujhe dar lagta hai"
+   ],
+   "zh": [
+    "害怕",
+    "我很怕",
+    "恐惧",
+    "吓人",
+    "惊恐"
+   ]
+  },
+  "worry": {
+   "en": [
+    "worried",
+    "anxious",
+    "concerned",
+    "worry",
+    "uneasy",
+    "nervous"
+   ],
+   "es": [
+    "me preocupa",
+    "estoy preocupado",
+    "estoy preocupada",
+    "preocupación",
+    "nervioso",
+    "nerviosa"
+   ],
+   "hi": [
+    "चिंता है",
+    "फ़िक्र है",
+    "चिंतित",
+    "chinta hai",
+    "fikar hai",
+    "pareshan",
+    "बेचैनी",
+    "बेचैन",
+    "bechaini"
+   ],
+   "zh": [
+    "担心",
+    "着急",
+    "焦虑",
+    "不安"
+   ]
+  },
+  "pain": {
+   "en": [
+    "hurts a lot",
+    "unbearable",
+    "severe pain",
+    "terrible pain",
+    "in agony",
+    "a lot of pain",
+    "a lot of chest pain",
+    "chest pain",
+    "pain",
+    "hurts"
+   ],
+   "es": [
+    "me duele mucho",
+    "no aguanto",
+    "dolor fuerte",
+    "dolor terrible",
+    "insoportable"
+   ],
+   "hi": [
+    "बहुत दर्द",
+    "सहा नहीं जाता",
+    "तेज़ दर्द",
+    "bahut dard",
+    "dard bahut hai",
+    "saha nahi jata"
+   ],
+   "zh": [
+    "很疼",
+    "疼得厉害",
+    "剧痛",
+    "疼死了",
+    "难以忍受"
+   ]
+  },
+  "frustration": {
+   "en": [
+    "fed up",
+    "can't take it",
+    "sick of",
+    "frustrated"
+   ],
+   "es": [
+    "ya no aguanto",
+    "estoy harto",
+    "estoy harta",
+    "frustrado",
+    "frustrada"
+   ],
+   "hi": [
+    "परेशान हूँ",
+    "तंग आ गया",
+    "तंग आ गई",
+    "pareshan hoon",
+    "tang aa gaya",
+    "tang aa gayi"
+   ],
+   "zh": [
+    "受不了",
+    "烦死了",
+    "厌倦",
+    "沮丧"
+   ]
+  },
+  "confusion": {
+   "en": [
+    "don't understand",
+    "do not understand",
+    "confused",
+    "not sure what",
+    "didn't understand",
+    "did not understand",
+    "not understand",
+    "i don't get"
+   ],
+   "es": [
+    "no entiendo",
+    "estoy confundido",
+    "estoy confundida",
+    "no comprendo"
+   ],
+   "hi": [
+    "समझ नहीं आया",
+    "समझ नहीं आ रहा",
+    "samajh nahi aaya",
+    "samajh nahi aa raha"
+   ],
+   "zh": [
+    "我不明白",
+    "听不懂",
+    "不明白",
+    "糊涂"
+   ]
+  },
+  "sadness": {
+   "en": [
+    "sad",
+    "hopeless",
+    "depressed",
+    "crying"
+   ],
+   "es": [
+    "triste",
+    "sin esperanza",
+    "deprimido",
+    "deprimida",
+    "llorando"
+   ],
+   "hi": [
+    "उदास",
+    "दुखी",
+    "निराश",
+    "udaas",
+    "dukhi",
+    "nirash"
+   ],
+   "zh": [
+    "难过",
+    "伤心",
+    "绝望",
+    "想哭"
+   ]
+  }
+ },
+ "intensifiers": {
+  "en": [
+   "very",
+   "really",
+   "so",
+   "extremely",
+   "a lot of",
+   "severe"
+  ],
+  "es": [
+   "mucho",
+   "muy",
+   "demasiado"
+  ],
+  "hi": [
+   "बहुत",
+   "bahut",
+   "काफ़ी"
+  ],
+  "zh": [
+   "很",
+   "非常",
+   "特别",
+   "太"
+  ]
+ },
+ "reviewed": {
+  "es": false,
+  "hi": false,
+  "zh": false
+ }
+}

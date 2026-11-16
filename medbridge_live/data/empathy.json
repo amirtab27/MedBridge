@@ -1,0 +1,44 @@
+{
+ "worrying": {
+  "en": "I understand this is worrying.",
+  "es": "Entiendo que esto le preocupa mucho.",
+  "hi": "यह चिंता की बात है, और आपका परेशान होना स्वाभाविक है।",
+  "zh": "我理解这让您很担心。",
+  "reviewed": false
+ },
+ "take_your_time": {
+  "en": "Take your time.",
+  "es": "Tómese su tiempo, por favor.",
+  "hi": "आप अपना समय लीजिए।",
+  "zh": "您慢慢来，不用着急。",
+  "reviewed": false
+ },
+ "right_to_come": {
+  "en": "You did the right thing coming in.",
+  "es": "Hizo bien en venir hoy.",
+  "hi": "आपने आज आकर सही किया।",
+  "zh": "您今天来是做对了。",
+  "reviewed": false
+ },
+ "here_to_help": {
+  "en": "I am here to help you.",
+  "es": "Estoy aquí para ayudarle.",
+  "hi": "आपकी मदद के लिए मैं यहीं मौजूद हूँ।",
+  "zh": "我在这里帮助您。",
+  "reviewed": false
+ },
+ "not_alone": {
+  "en": "You are not alone in this.",
+  "es": "Usted no está solo en esto.",
+  "hi": "आप इसमें अकेले नहीं हैं।",
+  "zh": "您不是一个人。",
+  "reviewed": false
+ },
+ "ask_anything": {
+  "en": "Please ask me anything.",
+  "es": "Por favor, pregúnteme lo que quiera.",
+  "hi": "आप मुझसे कुछ भी पूछ सकते हैं।",
+  "zh": "您有任何问题都可以问我。",
+  "reviewed": false
+ }
+}

@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>MedBridge</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%230f9d8f'/%3E%3Cpath d='M6 20c4-8 8-8 10 0s6 8 10 0' stroke='white' stroke-width='3' fill='none' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=Inter:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;600&family=Noto+Sans+SC:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<div class="bg" aria-hidden="true"><i></i><i></i><i></i></div>
+
+<section id="join">
+  <div class="join-card">
+    <div class="brand big"><span class="logo"></span><span>MedBridge</span></div>
+    <p class="tag">Translation that preserves medical meaning, cultural context and the human connection.</p>
+
+    <label class="lbl">I am the…</label>
+    <div class="roles">
+      <button class="role" data-role="doctor"><b>Doctor</b><span>I speak English</span></button>
+      <button class="role" data-role="patient"><b>Patient</b><span>Hindi · Español · 中文</span></button>
+    </div>
+
+    <div id="langPick" hidden>
+      <label class="lbl">Patient language</label>
+      <div class="chips" id="langChips">
+        <button class="chip" data-lang="hi">हिन्दी</button>
+        <button class="chip" data-lang="es">Español</button>
+        <button class="chip" data-lang="zh">中文</button>
+      </div>
+    </div>
+
+    <label class="lbl" for="sessionIn">Room code <small>(same on both devices)</small></label>
+    <input id="sessionIn" value="demo" autocomplete="off" spellcheck="false">
+
+    <button id="startBtn" class="primary" disabled>Join conversation</button>
+    <p class="fine">Simulated encounters only — no real patient data. Does not replace professional interpreters. Use Chrome for voice.</p>
+  </div>
+</section>
+
+<section id="app" hidden>
+  <header class="top">
+    <div class="brand"><span class="logo"></span><span>MedBridge</span></div>
+    <div class="meta">
+      <span class="pill" id="roomPill"></span>
+      <span class="pill" id="presence"></span>
+      <button class="ghost" id="voiceBtn" title="Read translations aloud"></button>
+      <button class="ghost warn" id="interpBtn"></button>
+    </div>
+  </header>
+  <div id="alertbar" hidden></div>
+
+  <main class="layout">
+    <section class="convo card">
+      <div id="thread" aria-live="polite"></div>
+      <div class="composer">
+        <button id="mic" class="orb off" aria-label="Microphone"><svg viewBox="0 0 24 24"><path d="M12 15a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3Zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.9V22h2v-3.1A7 7 0 0 0 19 12h-2Z"/></svg></button>
+        <div class="cstate">
+          <div id="cstatus"></div>
+          <div id="live"></div>
+        </div>
+        <form id="textForm" autocomplete="off">
+          <input id="textIn" enterkeyhint="send">
+          <button class="send" aria-label="Send"><svg viewBox="0 0 24 24"><path d="M3 20l18-8L3 4v6l11 2-11 2z"/></svg></button>
+        </form>
+      </div>
+    </section>
+    <aside id="side"></aside>
+  </main>
+</section>
+
+<div id="toast" hidden></div>
+<script src="/static/app.js"></script>
+</body>
+</html>
