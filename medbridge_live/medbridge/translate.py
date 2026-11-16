@@ -10,12 +10,51 @@ CODES = {"en": "eng_Latn", "es": "spa_Latn", "hi": "hin_Deva", "zh": "zho_Hans"}
 
 @functools.lru_cache(maxsize=1)
 def get_model():
+    import os
     import torch
+    from pathlib import Path
     from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
-    dev = "cuda" if torch.cuda.is_available() else ("mps" if torch.backends.mps.is_available() else "cpu")
+
+    dev = (
+        "cuda" if torch.cuda.is_available()
+        else "mps" if torch.backends.mps.is_available()
+        else "cpu"
+    )
+
     tok = AutoTokenizer.from_pretrained(MODEL)
-    model = AutoModelForSeq2SeqLM.from_pretrained(MODEL, torch_dtype=torch.float16 if dev == "cuda" else torch.float32).to(dev)
+
+    model = AutoModelForSeq2SeqLM.from_pretrained(
+        MODEL,
+        torch_dtype=torch.float16 if dev == "cuda" else torch.float32
+    )
+
+    # Locate the MedBridge project root
+    root = Path(__file__).resolve().parents[2]
+
+    adapter_dir = root / "adapters" / "medical_multilingual"
+
+    use_lora = os.getenv("MEDBRIDGE_USE_LORA", "0") == "1"
+
+    if use_lora:
+        if not (adapter_dir / "adapter_config.json").is_file():
+            raise FileNotFoundError(
+                f"Medical LoRA adapter not found: {adapter_dir}"
+            )
+
+        from peft import PeftModel
+
+        model = PeftModel.from_pretrained(
+            model,
+            str(adapter_dir)
+        )
+
+        print(f"Medical LoRA enabled: {adapter_dir}")
+    else:
+        print("Using base NLLB-200 (LoRA disabled)")
+
+    model = model.to(dev)
     model.eval()
+
     return tok, model
 
 
