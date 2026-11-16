@@ -99,6 +99,8 @@ async def handle_interim(s: Session, speaker: str, mid: str, text: str):
             wait = THROTTLE - (time.time() - st["last"])
             if wait > 0:
                 await asyncio.sleep(wait)
+            if not st["latest"]:  # a final message cleared it while we were waiting
+                break
             mid_, txt = st["latest"]
             st["latest"] = None
             st["last"] = time.time()
@@ -262,8 +264,8 @@ except ImportError:  # optional dependency
     edge_tts = None
 
 
-EL_MODEL = os.environ.get("MEDBRIDGE_EL_MODEL", "eleven_flash_v2_5")       # fast, 30+ languages incl. Hindi/Spanish/Mandarin
-EL_VOICE = os.environ.get("ELEVENLABS_VOICE_ID", "EXAVITQu4vr4xnSDxMaL")   # premade "Sarah": warm, calm
+EL_MODEL = os.environ.get("MEDBRIDGE_EL_MODEL", "eleven_multilingual_v2")  # closest to a cloned voice; Hindi/Spanish/Mandarin
+EL_VOICE = os.environ.get("ELEVENLABS_VOICE_ID", "QqPyu24rMjzzVxXJrpH8")   # "Sia" cloned voice (needs the owner's ELEVENLABS_API_KEY; else falls back to free voice)
 EL_BUDGET = int(os.environ.get("MEDBRIDGE_EL_BUDGET", "8000"))             # characters; then falls back to the free voice
 _el_used = 0
 
