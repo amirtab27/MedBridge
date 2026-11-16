@@ -39,7 +39,7 @@ const sendPrefs = () => send({type: 'prefs', lang: myLang, prefs});
 
 function on(d) {
   switch (d.type) {
-    case 'hello': patLang = d.lang; prefs = d.prefs; inject = d.inject; d.history.forEach(m => { msgs.set(m.id, m); }); renderAll(); break;
+    case 'hello': cloudTts = !!d.cloud_tts; patLang = d.lang; prefs = d.prefs; inject = d.inject; d.history.forEach(m => { msgs.set(m.id, m); }); renderAll(); break;
     case 'config': patLang = d.lang; prefs = d.prefs; inject = d.inject; relabel(); renderSide(); applyPrefsClasses(); break;
     case 'peer': peerOnline = d.online; relabel(); break;
     case 'interim': if (!msgs.has(d.id) && !done.has(d.id)) showLive(d.id, d.speaker, d.text, d.translation); break;
@@ -90,7 +90,7 @@ function openPrefs(first) {
   $('modal').hidden = false;
   $('sheet').querySelectorAll('.seg[data-k] button').forEach(b => b.onclick = () => { prefs[b.parentElement.dataset.k] = b.dataset.v; sendPrefs(); b.parentElement.querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b)); applyPrefsClasses(); });
   $('langSeg').querySelectorAll('button').forEach(b => b.onclick = () => { myLang = b.dataset.l; localStorage.mb_lang = myLang; patLang = myLang; sendPrefs(); stopRec(); relabel(); openPrefs(); });
-  $('swRead').onclick = e => { readAloud = !readAloud; e.currentTarget.classList.toggle('on', readAloud); if (!readAloud) speechSynthesis.cancel(); };
+  $('swRead').onclick = e => { readAloud = !readAloud; e.currentTarget.classList.toggle('on', readAloud); if (!readAloud) { speechSynthesis.cancel(); if (curAudio) curAudio.pause(); } };
   $('pdone').onclick = () => $('modal').hidden = true;
 }
 function languageGate() {
@@ -190,7 +190,7 @@ function renderSide() {
   $('side').querySelectorAll('[data-confirm]').forEach(b => b.onclick = () => send({type: 'confirm', id: b.dataset.confirm}));
   $('side').querySelectorAll('[data-reph]').forEach(b => b.onclick = () => { send({type: 'rephrase', id: b.dataset.reph}); $('txt').value = msgs.get(b.dataset.reph).text; $('txt').focus(); });
   $('side').querySelectorAll('[data-clar]').forEach(b => b.onclick = () => send({type: 'clarify', span: b.dataset.clar, en: b.dataset.q}));
-  $('swRead').onclick = () => { readAloud = !readAloud; if (!readAloud) speechSynthesis.cancel(); renderSide(); };
+  $('swRead').onclick = () => { readAloud = !readAloud; if (!readAloud) { speechSynthesis.cancel(); if (curAudio) curAudio.pause(); } renderSide(); };
   $('swInj').onclick = () => send({type: 'inject', on: !inject});
 }
 function flagCard(m, f) {
@@ -226,7 +226,8 @@ function onPeerFloor(s) {
 }
 
 // ---------- TTS (natural voice, queued, sentence-chunked) ----------
-let voices = [], ttsQ = [], ttsBusy = false;
+let voices = [], ttsQ = [], ttsBusy = false, cloudTts = false, curAudio = null;
+const cloudFetch = (t, lang) => fetch('/api/tts', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({session, text: t, lang})}).then(r => { if (!r.ok) throw new Error(r.status); return r.blob(); }).then(b => URL.createObjectURL(b));
 function loadVoices() { voices = speechSynthesis.getVoices(); }
 if ('speechSynthesis' in window) { loadVoices(); speechSynthesis.onvoiceschanged = loadVoices; }
 function pickVoice(lang) {
@@ -241,23 +242,34 @@ function speakMsg(m) {
   const lines = [];
   if (!isDoc && m.lead) lines.push(m.lead);
   lines.push(m.translation);
-  lines.forEach(t => ttsQ.push({t, lang, id: m.id}));
+  lines.forEach(t => ttsQ.push({t, lang, id: m.id, p: cloudTts ? cloudFetch(t, lang).catch(() => null) : null}));  // prefetch so playback starts instantly
   pumpTts();
 }
 function pumpTts() {
   if (ttsBusy || !ttsQ.length) return;
   if (peerFloor === 'speaking' || peerFloor === 'tts' || Date.now() - lastHeard < 1200 || myFloor === 'speaking') { setTimeout(pumpTts, 350); return; }
   const it = ttsQ.shift(); ttsBusy = true;
-  const v = pickVoice(it.lang);
-  if (!v && it.lang !== 'en' && voices.length) { noVoice(it.lang); ttsBusy = false; pumpTts(); return; }
-  const u = new SpeechSynthesisUtterance(it.t); u.lang = TTSL[it.lang]; if (v) u.voice = v;
-  u.rate = 0.96; u.pitch = 1;
   suspendMic(); floor('tts'); updateMicUi();
-  let wd;
-  const end = () => { clearTimeout(wd); if (!ttsBusy) return; ttsBusy = false; if (!ttsQ.length) { floor('idle'); setTimeout(resumeMic, 500); } updateMicUi(); pumpTts(); };
-  u.onend = end; u.onerror = end;
-  wd = setTimeout(() => { speechSynthesis.cancel(); end(); }, 3000 + it.t.length * 110);  // never let a stuck voice freeze the mic
-  speechSynthesis.speak(u);
+  let wd, finished = false;
+  const end = () => { clearTimeout(wd); if (finished) return; finished = true; if (!ttsBusy) return; ttsBusy = false; curAudio = null; if (!ttsQ.length) { floor('idle'); setTimeout(resumeMic, 500); } updateMicUi(); pumpTts(); };
+  const browserVoice = () => {
+    const v = pickVoice(it.lang);
+    if (!v && it.lang !== 'en' && voices.length) { noVoice(it.lang); end(); return; }
+    const u = new SpeechSynthesisUtterance(it.t); u.lang = TTSL[it.lang]; if (v) u.voice = v;
+    u.rate = 0.96; u.pitch = 1; u.onend = end; u.onerror = end;
+    clearTimeout(wd); wd = setTimeout(() => { speechSynthesis.cancel(); end(); }, 3000 + it.t.length * 110);
+    speechSynthesis.speak(u);
+  };
+  if (!it.p) { browserVoice(); return; }
+  wd = setTimeout(browserVoice, 8000);  // cloud voice too slow -> fall back to the browser voice
+  it.p.then(url => {
+    if (finished) return;
+    if (!url) { clearTimeout(wd); browserVoice(); return; }
+    clearTimeout(wd);
+    const a = new Audio(url); curAudio = a; a.onended = end; a.onerror = () => { if (!finished) browserVoice(); };
+    wd = setTimeout(end, 60000);
+    a.play().catch(() => browserVoice());
+  });
 }
 let warnedVoice = {};
 function noVoice(l) { if (warnedVoice[l]) return; warnedVoice[l] = 1; banner(`No ${NAMES[l]} voice installed on this device — captions still work. (Install one in system Settings → Accessibility → Spoken Content.)`); }
@@ -296,7 +308,7 @@ $('mic').onclick = () => {
   if (!SR) { banner('Speech recognition needs Chrome. You can still type.'); return; }
   if (!isDoc && !myLang) return;
   micWanted = !micWanted;
-  if (micWanted) { speechSynthesis && speechSynthesis.cancel(); ttsBusy = false; startRec(); } else { stopRec(); floor('idle'); }
+  if (micWanted) { speechSynthesis && speechSynthesis.cancel(); if (curAudio) { curAudio.pause(); curAudio = null; } ttsBusy = false; startRec(); } else { stopRec(); floor('idle'); }
   updateMicUi();
 };
 
