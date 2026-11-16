@@ -1,0 +1,27 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MedBridge</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/app.css"></head>
+<body>
+<header class="top">
+ <div class="brand"><svg viewBox="0 0 32 32" width="30" height="30"><rect width="32" height="32" rx="9" fill="var(--accent)"/><path d="M5 20c4-8 8-8 11-2s7 6 11-2" stroke="#fff" stroke-width="2.6" fill="none" stroke-linecap="round"/><circle cx="16" cy="9" r="2.4" fill="#fff"/></svg><span>MedBridge</span></div>
+ <div class="top-mid"><span class="pill" id="roleLbl"></span><span class="pill soft" id="langLbl"></span><span class="pill peer" id="peerLbl"><i></i><span></span></span></div>
+ <div class="top-right" id="topRight"></div>
+</header>
+<div class="banner" id="banner" hidden></div>
+<div class="layout" id="layout">
+ <main class="convo">
+  <div class="feed" id="feed"><div class="empty" id="empty"></div></div>
+  <footer class="composer">
+   <div class="quick" id="quick"></div>
+   <div class="comp-row">
+    <button class="mic" id="mic" aria-label="Microphone"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg><span class="ring"></span></button>
+    <div class="inputwrap"><div class="status" id="micStatus"></div><input id="txt" autocomplete="off"><button class="send" id="send" aria-label="Send">➤</button></div>
+   </div>
+  </footer>
+ </main>
+ <aside class="side" id="side"></aside>
+</div>
+<div class="modal" id="modal" hidden><div class="sheet" id="sheet"></div></div>
+<script src="/static/app.js"></script>
+</body></html>

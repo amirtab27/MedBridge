@@ -1,0 +1,1 @@
+MedBridge Vercel frontend. Deploy this directory as Vercel project root (Framework Other). Start local backend and cloudflared tunnel. Open https://YOUR-VERCEL-URL/?backend=https://YOUR-TUNNEL.trycloudflare.com on BOTH browsers, then choose roles. Backend URL is saved in each browser localStorage. Update link whenever quick tunnel changes. Only use fictional patient data.

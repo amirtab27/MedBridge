@@ -1,0 +1,15 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MedBridge</title><link rel="stylesheet" href="/static/app.css"></head>
+<body class="landing"><main class="land">
+<div class="brand big"><svg viewBox="0 0 32 32" width="40" height="40"><rect width="32" height="32" rx="9" fill="var(--accent)"/><path d="M5 20c4-8 8-8 11-2s7 6 11-2" stroke="#fff" stroke-width="2.6" fill="none" stroke-linecap="round"/><circle cx="16" cy="9" r="2.4" fill="#fff"/></svg><span>MedBridge</span></div>
+<h1>Meaning, safety and warmth — across languages.</h1>
+<p class="sub">A live, two-device conversation between clinician and patient. Open one screen on each device.</p>
+<label class="field">Session code<input id="code" value="demo" maxlength="24" autocomplete="off"></label>
+<div class="cards">
+<a class="role-card" id="d" href="/doctor?s=demo"><div class="ico">🩺</div><h3>I'm the clinician</h3><p>Speak English. See what the patient feels, with safety flags.</p></a>
+<a class="role-card" id="p" href="/patient?s=demo"><div class="ico">💬</div><h3>I'm the patient</h3><p>Español · हिन्दी · 中文. Read and hear your doctor in your language.</p></a>
+</div>
+<p class="fine">Simulated encounters only. Does not replace professional interpreters. Use Chrome for speech.</p>
+</main>
+<script>const c=document.getElementById('code');const params=new URLSearchParams(location.search);const b=params.get('backend');if(b)localStorage.setItem('mb_backend',b.replace(/\/$/,''));function u(){const s=encodeURIComponent(c.value.trim()||'demo');d.href='/doctor?s='+s;p.href='/patient?s='+s}c.oninput=u;u()</script>
+</body></html>

@@ -1,0 +1,13 @@
+{
+  "framework": null,
+  "rewrites": [
+    {
+      "source": "/doctor",
+      "destination": "/doctor.html"
+    },
+    {
+      "source": "/patient",
+      "destination": "/patient.html"
+    }
+  ]
+}
