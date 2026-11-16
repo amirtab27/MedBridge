@@ -11,6 +11,7 @@ from fastapi.staticfiles import StaticFiles
 
 from .models import Message, Flag
 from . import translate as T, safety, culture, emotion
+from . import plain_language, cultural_insights
 from .present import present
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -81,6 +82,8 @@ def status_of(flags: list[Flag]) -> str:
 def pack(m: Message, extra: dict | None = None) -> dict:
     d = m.to_dict()
     d["facts"] = safety.extract_facts(m.text, m.src_lang)["doses"]
+    d["plain_explanations"] = getattr(m, "plain_explanations", [])
+    d["cultural_insights"] = getattr(m, "cultural_insights", [])
     d.update(extra or {})
     return d
 
@@ -130,6 +133,9 @@ async def handle_final(s: Session, speaker: str, mid: str, text: str):
         m.emotions, ef = emotion.check_emotion(m, "")
         m.flags += ef
     m.status = status_of(m.flags)
+    # Supplemental information only: never alters translated clinical text or TTS.
+    m.plain_explanations = plain_language.explain(text, tgt) if speaker == "doctor" else []
+    m.cultural_insights = cultural_insights.insights(text) if speaker == "patient" else []
     extra = {"clean_translation": clean} if speaker == "doctor" else {}
     s.history[mid] = {**pack(m), "clean": clean}
     s.order.append(mid)

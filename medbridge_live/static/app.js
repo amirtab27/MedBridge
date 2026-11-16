@@ -145,7 +145,8 @@ function renderMsg(m) {
     if (mine) {
       html = `<div class="who">You ${dot(m)}</div><div class="bubble ${status}"><div class="main">${esc(m.text)}</div><div class="sub">${NAMES[m.tgt_lang]}: ${esc(m.translation)}</div>${m.back ? `<div class="sub">↺ Back-translation: “${esc(m.back)}”</div>` : ''}</div>`;
     } else {
-      html = `<div class="who">Patient ${dot(m)}</div><div class="bubble ${status}"><div class="main">${esc(m.translation)}</div><div class="sub">Original · ${esc(m.text)}</div></div>${chips(m)}`;
+      const context = (m.cultural_insights || []).map(x => `<div class="sub" style="margin-top:8px">🌍 <b>${esc(x.topic)}</b> · ${esc(x.suggestion)}</div>`).join('');
+      html = `<div class="who">Patient ${dot(m)}</div><div class="bubble ${status}"><div class="main">${esc(m.translation)}</div><div class="sub">Original · ${esc(m.text)}</div>${context ? `<div class="sub" style="margin-top:8px"><b>Cultural context · clinician prompt only</b></div>${context}` : ''}</div>${chips(m)}`;
     }
   } else {
     const T_ = T();
@@ -155,6 +156,7 @@ function renderMsg(m) {
       const facts = prefs.length === 'detailed' && (m.facts || []).length ? `<div class="chips facts">${m.facts.map(f => `<span class="chip">${esc(f[0])} ${esc(f[1])}</span>`).join('')}</div>` : '';
       html = `${m.lead ? `<div class="lead">💚 ${esc(m.lead)}</div>` : ''}<div class="who">${esc(T_.doctorSays)} ${dot(m)}</div>
       <div class="bubble ${status === 'retracted' ? 'retracted' : redP ? 'red' : ''}"><div class="main">${esc(m.translation)}</div></div>
+      ${(m.plain_explanations || []).length ? `<div class="bubble" style="margin-top:6px"><div class="sub"><b>📖 ${patLang === 'es' ? 'En palabras sencillas' : patLang === 'hi' ? 'आसान शब्दों में' : patLang === 'zh' ? '简单解释' : 'In simple words'}</b></div>${m.plain_explanations.map(x => `<div class="sub" style="margin-top:6px"><b>${esc(x.term)}</b>: ${esc(x.explanation)}</div>`).join('')}</div>` : ''}
       ${redP ? `<div class="confirming">⚠ ${esc(T_.confirming)}</div>` : ''}${status === 'retracted' ? `<div class="confirming">${esc(T_.retract)}</div>` : ''}${status === 'confirmed' ? `<div class="chips"><span class="chip ok">✓ ${esc(T_.confirmed)}</span></div>` : ''}${facts}`;
     }
   }
